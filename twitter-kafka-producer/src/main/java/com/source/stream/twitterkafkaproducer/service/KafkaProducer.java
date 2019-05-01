@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.source.stream.twitterkafkaproducer.model.Tweet;
 
 @Service
-public class Producer {
+public class KafkaProducer {
 
     private static final String TOPIC = "tweets";
 
@@ -17,4 +17,5 @@ public class Producer {
     public void sendMessage(Tweet message) {
         this.kafkaTemplate.send(TOPIC, message);
     }
+    
 }

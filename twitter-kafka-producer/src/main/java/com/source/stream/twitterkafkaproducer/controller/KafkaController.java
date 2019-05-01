@@ -7,16 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.source.stream.twitterkafkaproducer.model.Tweet;
-import com.source.stream.twitterkafkaproducer.service.Producer;
+import com.source.stream.twitterkafkaproducer.service.KafkaProducer;
 
 @RestController
 @RequestMapping
 public class KafkaController {
 
-    private final Producer producer;
+    private final KafkaProducer producer;
 
     @Autowired
-    KafkaController(Producer producer) {
+    KafkaController(KafkaProducer producer) {
         this.producer = producer;
     }
 
