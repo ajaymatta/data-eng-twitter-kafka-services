@@ -9,13 +9,12 @@ import com.source.stream.twitterkafkaproducer.model.Tweet;
 @Service
 public class KafkaProducer {
 
-    private static final String TOPIC = "tweets";
+	private static final String TOPIC = "tweets";
 
-    @Autowired
-    private KafkaTemplate<String, Tweet> kafkaTemplate;
+	@Autowired
+	private KafkaTemplate<String, Tweet> kafkaTemplate;
 
-    public void sendMessage(Tweet message) {
-        this.kafkaTemplate.send(TOPIC, message);
-    }
-    
+	public void sendMessage(Tweet message) {
+		this.kafkaTemplate.send(TOPIC, message);
+	}
 }

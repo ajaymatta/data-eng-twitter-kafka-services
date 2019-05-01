@@ -10,14 +10,14 @@ import com.source.stream.twitterkafkaproducer.service.TwitterClient;
 
 @SpringBootApplication
 public class TwitterKafkaProducerApplication implements ApplicationRunner {
-	
+
 	@Autowired
 	TwitterClient client;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TwitterKafkaProducerApplication.class, args);
 	}
-	
+
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		client.streamTweets();

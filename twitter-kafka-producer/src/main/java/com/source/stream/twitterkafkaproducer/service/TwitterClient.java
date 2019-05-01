@@ -20,67 +20,58 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TwitterClient {
-	
+
 	@Autowired
 	KafkaProducer producer;
-	
+
 	@Value("${spring.twitter.consumer-key}")
 	String twitterConsumerKey;
-	
+
 	@Value("${spring.twitter.consumer-secret}")
 	String twitterConsumerSecret;
-	
+
 	@Value("${spring.twitter.access-token}")
 	String twitterAccessToken;
-	
+
 	@Value("${spring.twitter.token-secret}")
 	String twitterTokenSecret;
-	
+
 	@Value("${spring.twitter.hashtag}")
 	String hashtag;
-	
+
 	private Client client;
-    private BlockingQueue<String> queue;
-    private Gson gson;
+	private BlockingQueue<String> queue;
+	private Gson gson;
 
-    public TwitterClient() {
-    	
-    	
-    }
-	
+	public TwitterClient() {
+
+	}
+
 	public void streamTweets() {
-        // Configure auth
-        Authentication authentication = new OAuth1(
-        		this.twitterConsumerKey,
-        		this.twitterConsumerSecret,
-        		this.twitterAccessToken,
-        		this.twitterTokenSecret);
+		// Configure auth
+		Authentication authentication = new OAuth1(this.twitterConsumerKey, this.twitterConsumerSecret,
+				this.twitterAccessToken, this.twitterTokenSecret);
 
-        // track the terms of your choice. here im only tracking #bigdata.
-        StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
-        endpoint.trackTerms(Collections.singletonList(this.hashtag));
+		// track the hashtag
+		StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
+		endpoint.trackTerms(Collections.singletonList(this.hashtag));
 
-        queue = new LinkedBlockingQueue<>(10000);
+		queue = new LinkedBlockingQueue<>(10000);
 
-        client = new ClientBuilder()
-                .hosts(Constants.STREAM_HOST)
-                .authentication(authentication)
-                .endpoint(endpoint)
-                .processor(new StringDelimitedProcessor(queue))
-                .build();
-        gson = new Gson();
-    	client.connect();
-    	while (!client.isDone()) {
+		client = new ClientBuilder().hosts(Constants.STREAM_HOST).authentication(authentication).endpoint(endpoint)
+				.processor(new StringDelimitedProcessor(queue)).build();
+		gson = new Gson();
+		client.connect();
+		while (!client.isDone()) {
 			try {
-				/* Pick tweets from queue to Kafka */
 				Tweet tweet = gson.fromJson(queue.take(), Tweet.class);
-                System.out.printf("Fetched tweet id %d\n", tweet.getId());
-                producer.sendMessage(tweet);
+				System.out.printf("Fetched tweet id %d\n", tweet.getId());
+				producer.sendMessage(tweet);
 			} catch (InterruptedException e) {
 				System.out.println("Interrupted blocking read from queue.");
 			}
 		}
-    	client.stop();
+		client.stop();
 		System.out.println("Closed connection.");
-    }
+	}
 }

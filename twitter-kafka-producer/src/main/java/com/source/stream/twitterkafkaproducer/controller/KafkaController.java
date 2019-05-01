@@ -13,15 +13,15 @@ import com.source.stream.twitterkafkaproducer.service.KafkaProducer;
 @RequestMapping
 public class KafkaController {
 
-    private final KafkaProducer producer;
+	private final KafkaProducer producer;
 
-    @Autowired
-    KafkaController(KafkaProducer producer) {
-        this.producer = producer;
-    }
+	@Autowired
+	KafkaController(KafkaProducer producer) {
+		this.producer = producer;
+	}
 
-    @PostMapping(value = "/publish")
-    public void sendMessageToKafkaTopic(@RequestBody Tweet tweet) {
-        this.producer.sendMessage(tweet);
-    }
+	@PostMapping(value = "/publish")
+	public void sendMessageToKafkaTopic(@RequestBody Tweet tweet) {
+		this.producer.sendMessage(tweet);
+	}
 }
